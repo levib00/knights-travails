@@ -5,7 +5,7 @@ class Board {
   }
 }
 class Space {
-  constructor(x, y) { //refactoring in make game board. will have all knight moves made there 
+  constructor(x, y) {
     this.coordinateX = x 
     this.coordinateY = y 
     this.knightMove1 = null
@@ -23,13 +23,8 @@ function levelOrderRec(space, newX, newY, func = null) {
   //console.log("space:", space,"newX:", newX,"newY", newY)
   
   const queueRec = []
-  const queueRecValues = []
 
   function levelOrder(space, newX, newY, func) {
-    if (newX > 8 || newX < 1 || newY > 8 || newY < 1) {
-      return null
-    }
-    
     if (queueRec.length < 1) {
       queueRec.push(space)
     }
@@ -65,115 +60,107 @@ function levelOrderRec(space, newX, newY, func = null) {
     if (space.knightMove8) {
       queueRec.push(space.knightMove8)
     }
-    console.log('queue:', queueRec);
+    //console.log('queue:', queueRec);
     //console.log('length',queueRec.length);
-    if (queueRec.length === 0 && func === null) {
-      const newSpace = new Space(newX, newY)
-      return newSpace
-    }
+    // if (queueRec.length === 0 && func === null) {
+    //   const newSpace = new Space(newX, newY)
+    //   return newSpace
+    // }
     if (queueRec.length === 0) {
-      return
+      return null
     }
     //console.log("queue:" ,queueRec)
     levelOrder(queueRec[0], newX, newY, func)
     
   }
   const newValue = levelOrder(space, newX, newY, func)
-  //console.log(newValue)
+  console.log(newValue)
   return newValue
 }
 
-function makeGameBoard(x, y) {
+function makeGameBoard(x, y) { 
+  if (x > 8 || x < 1 || y > 8 || y < 1) {
+    return null
+  }
+  
+  //new idea, add level order here but make every return null except the one that occurs when node is found. if search doesn't return null, set knight move to levelorder(), else set knightmove to makeGameBoard
   const space = new Space(x, y)
-  space.knightMove1 = levelOrderRec(space, space.coordinateX + 1, space.coordinateY + 2)
-  space.knightMove2 = levelOrderRec(space, space.coordinateX + 2, space.coordinateY + 1)
-  space.knightMove3 = levelOrderRec(space, space.coordinateX + 2, space.coordinateY - 1)
-  space.knightMove4 = levelOrderRec(space, space.coordinateX + 1, space.coordinateY - 2)
-  space.knightMove5 = levelOrderRec(space, space.coordinateX - 1, space.coordinateY - 2)
-  space.knightMove6 = levelOrderRec(space, space.coordinateX - 2, space.coordinateY - 1)
-  space.knightMove7 = levelOrderRec(space, space.coordinateX - 2, space.coordinateY + 1)
-  space.knightMove8 = levelOrderRec(space, space.coordinateX - 1, space.coordinateY + 2)
+
+  const checkKnightMove1 = levelOrderRec(space, space.coordinateX + 1, space.coordinateY + 2)
+  const checkKnightMove2 = levelOrderRec(space, space.coordinateX + 2, space.coordinateY + 1)
+  const checkKnightMove3 = levelOrderRec(space, space.coordinateX + 2, space.coordinateY - 1)
+  const checkKnightMove4 = levelOrderRec(space, space.coordinateX + 1, space.coordinateY - 2)
+  const checkKnightMove5 = levelOrderRec(space, space.coordinateX - 1, space.coordinateY - 2)
+  const checkKnightMove6 = levelOrderRec(space, space.coordinateX - 2, space.coordinateY - 1)
+  const checkKnightMove7 = levelOrderRec(space, space.coordinateX - 2, space.coordinateY + 1)
+  const checkKnightMove8 = levelOrderRec(space, space.coordinateX - 1, space.coordinateY + 2)
+
+  if (checkKnightMove1 !== null) {
+    space.knightMove1 = checkKnightMove1
+  } else {
+    console.log('1');
+    space.knightMove1 = makeGameBoard(space.coordinateX + 1, space.coordinateY + 2)
+  }
+  
+  if (checkKnightMove2 !== null) {
+    
+    space.knightMove2 = checkKnightMove2
+  } else {
+    console.log('2')
+    space.knightMove2 = makeGameBoard(space.coordinateX + 2, space.coordinateY + 1)
+  }
+
+  if (checkKnightMove3 !== null) {
+    space.knightMove3 = checkKnightMove3
+  } else {
+    console.log('3')
+    space.knightMove3 = makeGameBoard(space.coordinateX + 2, space.coordinateY - 1)
+  }
+
+  if (checkKnightMove4 !== null) {
+    space.knightMove4 = checkKnightMove4
+  } else {
+    console.log('4')
+    space.knightMove4 = makeGameBoard(space.coordinateX + 1, space.coordinateY - 2)
+  }
+
+  if (checkKnightMove5 !== null) {
+    space.knightMove5 = checkKnightMove5
+  } else {
+    console.log('5')
+    space.knightMove5 = makeGameBoard(space.coordinateX - 1, space.coordinateY - 2)
+  }
+
+  if (checkKnightMove6 !== null) {
+    space.knightMove6 = checkKnightMove6
+  } else {
+    console.log('6')
+    space.knightMove6 = makeGameBoard(space.coordinateX - 2, space.coordinateY - 1)
+  }
+
+  if (checkKnightMove7 !== null) {
+    space.knightMove7 = checkKnightMove7
+  } else {
+    console.log('7')
+    space.knightMove7 = makeGameBoard(space.coordinateX - 2, space.coordinateY + 1)
+  }
+
+  if (checkKnightMove8 !== null) {
+    space.knightMove8 = checkKnightMove8
+  } else {
+    console.log('8')
+    space.knightMove8 = makeGameBoard(space.coordinateX - 1, space.coordinateY + 2)
+  }
+
+  // space.knightMove2 = levelOrderRec(space, space.coordinateX + 2, space.coordinateY + 1)
+  // space.knightMove3 = levelOrderRec(space, space.coordinateX + 2, space.coordinateY - 1)
+  // space.knightMove4 = levelOrderRec(space, space.coordinateX + 1, space.coordinateY - 2)
+  // space.knightMove5 = levelOrderRec(space, space.coordinateX - 1, space.coordinateY - 2)
+  // space.knightMove6 = levelOrderRec(space, space.coordinateX - 2, space.coordinateY - 1)
+  // space.knightMove7 = levelOrderRec(space, space.coordinateX - 2, space.coordinateY + 1)
+  // space.knightMove8 = levelOrderRec(space, space.coordinateX - 1, space.coordinateY + 2)
+  
   return space
-}
-
-function calculateKnightMove1 (currentX,currentY) { //move if statements into a helper function
-  let newX = currentX + 1;
-  let newY = currentY + 2;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
-}
-
-function calculateKnightMove2 (currentX,currentY) {
-  let newX = currentX + 2;
-  let newY = currentY + 1;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
-}
-
-function calculateKnightMove3 (currentX,currentY) {
-  let newX = currentX + 2;
-  let newY = currentY - 1;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
-}
-
-function calculateKnightMove4 (currentX,currentY) {
-  let newX = currentX + 1;
-  let newY = currentY - 2;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
-}
-
-function calculateKnightMove5 (currentX,currentY) {
-  let newX = currentX - 1;
-  let newY = currentY - 2;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
-}
-
-function calculateKnightMove6 (currentX,currentY) {
-  let newX = currentX - 2;
-  let newY = currentY - 1;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
-}
-
-function calculateKnightMove7 (currentX,currentY) {
-  let newX = currentX - 2;
-  let newY = currentY + 1;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
-}
-
-function calculateKnightMove8 (currentX,currentY) {
-  let newX = currentX - 1;
-  let newY = currentY + 2;
-  if (newX > 8 || newY > 8 || newX < 1 || newY < 1) {
-    return null
-  } else {
-    const space = new Space(newX, newY)
-  }
 }
 
 const testy = new Board(1, 1)
