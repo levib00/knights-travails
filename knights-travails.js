@@ -1,4 +1,3 @@
-let w = 0
 class Graph {
   constructor(noOfVertices) {
     this.noOfVertices = noOfVertices;
@@ -106,14 +105,14 @@ const buildPath = (target, path) => {
 
   while (path.has(target)) {
     const source = path.get(target);
-    result.push({source, target});
+    result.push(target)
     target = source;
   }
 
-  return result.reverse();
+  return `you can get from ${target} to ${result[0]} in ${result.length} moves. Make the Path is ${result.reverse()}.`;
 };
 
-function findPath (source, target) {
+function findPath (source, target, graph) {
   const queue = [source];
   const visited = new Set();
   const path = new Map();
@@ -121,48 +120,27 @@ function findPath (source, target) {
 
   while (queue.length > 0){
     const start = queue.shift()
-
+    let e = 0
     if (start === target) {
       return buildPath(start, path)
     }
-
-    for (const next of graph ) {
-
-    }
-  }
-}
-
-const findaPath = (source, target, graph) => {
-  const queue = [source];
-  const visited = new Set();
-  const path = new Map();
-
-  while (queue.length > 0) {
-    const start = queue.shift();
-
-    if (start === target) {
-      return buildPath(start, path);
-    }
-    console.log(graph.get(start))
-    for (const next of graph.get(start)) {
+    for (const next of graph.AdjList.get(start) ) {
+      e++
       if (visited.has(next)) {
-        continue;
+      continue;
       }
 
-      if (!queue.has(next)) {
-        path.set(next, start);
-        queue.push(next);
+      if (!queue.includes(next)) {
+        path.set(next, start)
+        queue.push(next)
       }
+      
     }
-
-    visited.add(start);
+    visited.add(start)
   }
-
-  return null;
-};
+  return null
+}
 
 let graph = new Graph(64);
 addElements(graph)
-
-graph.printGraph();
-
+console.log(findPath('[1, 1]', '[8, 7]', graph))
