@@ -1,3 +1,4 @@
+let w = 0
 class Graph {
   constructor(noOfVertices) {
     this.noOfVertices = noOfVertices;
@@ -34,14 +35,14 @@ function makeGameSpaces() {
   const gameSpaces = []
   for (let i = 1; i < 9; i++) {
     for (let j = 1; j < 9; j++) {
-      gameSpaces.push([i, j])
+      gameSpaces.push(`[${i}, ${j}]`)
     }
   }
   return gameSpaces
 }
 
 function addElements(graph) {
-  let vertices = makeGameSpaces();
+  let vertices = makeGameSpaces()
 
   function addVertices(graph) {
     for (var i = 0; i < vertices.length; i++) {
@@ -51,46 +52,47 @@ function addElements(graph) {
 
   function addEdges(graph, vertices) {
     for (let space of vertices) {
-      const xPositive1 = space[0] + 1
-      const xPositive2 = space[0] + 2
-      const xNegative1 = space[0] - 1
-      const xNegative2 = space[0] - 2
+      let spaces = JSON.parse(space)
+      const xPositive1 = spaces[0] + 1
+      const xPositive2 = spaces[0] + 2
+      const xNegative1 = spaces[0] - 1
+      const xNegative2 = spaces[0] - 2
       
-      const yPositive1 = space[1] + 1
-      const yPositive2 = space[1] + 2
-      const yNegative1 = space[1] - 1
-      const yNegative2 = space[1] - 2
+      const yPositive1 = spaces[1] + 1
+      const yPositive2 = spaces[1] + 2
+      const yNegative1 = spaces[1] - 1
+      const yNegative2 = spaces[1] - 2
 
       if (xPositive1 > 0 && xPositive1 < 8 && yPositive2 > 0 && yPositive2 < 8) {
-        const newSpace = vertices.find(element => element[0] === xPositive1 && element[1] === yPositive2)
+        const newSpace = vertices.find(element => element === `[${xPositive1}, ${yPositive2}]`)
         graph.addEdge(space, newSpace)
       }
       if (xPositive2 > 0 && xPositive2 < 8 && yPositive1 > 0 && yPositive1 < 8) {
-        const newSpace = vertices.find(element => element[0] === xPositive2 && element[1] === yPositive1)
+        const newSpace = vertices.find(element => element === `[${xPositive2}, ${yPositive1}]`)
         graph.addEdge(space, newSpace)
       }
       if (xPositive2 > 0 && xPositive2 < 8 && yNegative1 > 0 && yNegative1 < 8) {
-        const newSpace = vertices.find(element => element[0] === xPositive2 && element[1] === yNegative1)
+        const newSpace = vertices.find(element => element === `[${xPositive2}, ${yNegative1}]`)
         graph.addEdge(space, newSpace)
       }
       if (xPositive1 > 0 && xPositive1 < 8 && yNegative2 > 0 && yNegative2 < 8) {
-        const newSpace = vertices.find(element => element[0] === xPositive1 && element[1] === yNegative2)
+        const newSpace = vertices.find(element => element === `[${xPositive1}, ${yNegative2}]`)
         graph.addEdge(space, newSpace)
       }
       if (xNegative1 > 0 && xNegative1 < 8 && yNegative2 > 0 && yNegative2 < 8) {
-        const newSpace = vertices.find(element => element[0] === xNegative1 && element[1] === yNegative2)
+        const newSpace = vertices.find(element => element === `[${xNegative1}, ${yNegative2}]`)
         graph.addEdge(space, newSpace)
       }
       if (xNegative2 > 0 && xNegative2 < 8 && yNegative1 > 0 && yNegative1 < 8) {
-        const newSpace = vertices.find(element => element[0] === xNegative2 && element[1] === yNegative1)
+        const newSpace = vertices.find(element => element === `[${xNegative2}, ${yNegative1}]`)
         graph.addEdge(space, newSpace)
       }
       if (xNegative2 > 0 && xNegative2 < 8 && yPositive1 > 0 && yPositive1 < 8) {
-        const newSpace = vertices.find(element => element[0] === xNegative2 && element[1] === yPositive1)
+        const newSpace = vertices.find(element => element === `[${xNegative2}, ${yPositive1}]`)
         graph.addEdge(space, newSpace)
       }
       if (xNegative1 > 0 && xNegative1 < 8 && yPositive2 > 0 && yPositive2 < 8) {
-        const newSpace = vertices.find(element => element[0] === xNegative1 && element[1] === yPositive2)
+        const newSpace = vertices.find(element => element === `[${xNegative1}, ${yPositive2}]`)
         graph.addEdge(space, newSpace)
       }
     }
@@ -98,9 +100,69 @@ function addElements(graph) {
   addVertices(graph)
   addEdges(graph, vertices)
 }
+
+const buildPath = (target, path) => {
+  const result = [];
+
+  while (path.has(target)) {
+    const source = path.get(target);
+    result.push({source, target});
+    target = source;
+  }
+
+  return result.reverse();
+};
+
+function findPath (source, target) {
+  const queue = [source];
+  const visited = new Set();
+  const path = new Map();
+
+
+  while (queue.length > 0){
+    const start = queue.shift()
+
+    if (start === target) {
+      return buildPath(start, path)
+    }
+
+    for (const next of graph ) {
+
+    }
+  }
+}
+
+const findaPath = (source, target, graph) => {
+  const queue = [source];
+  const visited = new Set();
+  const path = new Map();
+
+  while (queue.length > 0) {
+    const start = queue.shift();
+
+    if (start === target) {
+      return buildPath(start, path);
+    }
+    console.log(graph.get(start))
+    for (const next of graph.get(start)) {
+      if (visited.has(next)) {
+        continue;
+      }
+
+      if (!queue.has(next)) {
+        path.set(next, start);
+        queue.push(next);
+      }
+    }
+
+    visited.add(start);
+  }
+
+  return null;
+};
+
 let graph = new Graph(64);
 addElements(graph)
-
 
 graph.printGraph();
 
