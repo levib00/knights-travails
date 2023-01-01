@@ -9,6 +9,7 @@ class Graph {
   }
 
   addEdge(vertexStart, vertexEnd) {
+    //Adds edges between given nodes if edge doesn't already exist.
     if (!this.AdjList.get(vertexStart).includes(vertexEnd)) {
       this.AdjList.get(vertexStart).push(vertexEnd);
     }
@@ -24,13 +25,14 @@ class Graph {
       let connectedVertices = '';
       for (let j of getValues) {
         connectedVertices += '[' + j + '] '
-        console.log('[' + i + ']' + ' -> ' + connectedVertices)//find out what conc is
+        console.log('[' + i + ']' + ' -> ' + connectedVertices)
       }
     }
   }
 }
 
 function makeGameSpaces() {
+  //creates coordinates for all grid spaces from 1, 1 - 8, 8
   const gameSpaces = []
   for (let i = 1; i < 9; i++) {
     for (let j = 1; j < 9; j++) {
@@ -51,6 +53,7 @@ function addElements(graph) {
 
   function addEdges(graph, vertices) {
     for (let space of vertices) {
+      //vertices are stored as strings so need to be parsed to arrays to be used here.
       let spaces = JSON.parse(space)
       const xPositive1 = spaces[0] + 1
       const xPositive2 = spaces[0] + 2
@@ -62,6 +65,7 @@ function addElements(graph) {
       const yNegative1 = spaces[1] - 1
       const yNegative2 = spaces[1] - 2
 
+      //if statements add edges to vertices for all 8 possible moves a knight could make.
       if (xPositive1 > 0 && xPositive1 < 8 && yPositive2 > 0 && yPositive2 < 8) {
         const newSpace = vertices.find(element => element === `[${xPositive1}, ${yPositive2}]`)
         graph.addEdge(space, newSpace)
@@ -109,32 +113,28 @@ const buildPath = (target, path) => {
     target = source;
   }
 
-  return `you can get from ${target} to ${result[0]} in ${result.length} moves. Make the Path is ${result.reverse()}.`;
+  return `You can get from ${target} to ${result[0]} in ${result.length} moves. Make the Path is ${result.reverse()}.`;
 };
 
 function findPath (source, target, graph) {
+  //traverses graph with breadth first search until it finds the target vertex, then calls build path
   const queue = [source];
   const visited = new Set();
   const path = new Map();
 
-
   while (queue.length > 0){
     const start = queue.shift()
-    let e = 0
     if (start === target) {
       return buildPath(start, path)
     }
     for (const next of graph.AdjList.get(start) ) {
-      e++
       if (visited.has(next)) {
       continue;
       }
-
       if (!queue.includes(next)) {
         path.set(next, start)
         queue.push(next)
       }
-      
     }
     visited.add(start)
   }
